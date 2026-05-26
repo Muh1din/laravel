@@ -76,4 +76,21 @@ class QueryBuilderTest extends TestCase
         $collection->each(fn($item) => Log::info(json_encode($item)) );
     }
 
+
+    // update query builder
+
+    public function testUpdate(){
+        $this->insertCategories();
+
+        DB::table('categories')->where('id', '=' , 'SMARTPHONE')->update([
+            'name' => 'Handphone'
+        ]);
+
+        $collection = DB::table('categories')->where('name', '=', 'Handphone')->get();
+        self::assertCount(1, $collection);
+
+        $collection->each(fn($item) => Log::info(json_encode($item)));
+
+    }
+
 }
