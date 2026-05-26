@@ -76,9 +76,7 @@ class QueryBuilderTest extends TestCase
         $collection->each(fn($item) => Log::info(json_encode($item)) );
     }
 
-
     // update query builder
-
     public function testUpdate(){
         $this->insertCategories();
 
@@ -90,8 +88,6 @@ class QueryBuilderTest extends TestCase
         self::assertCount(1, $collection);
 
         $collection->each(fn($item) => Log::info(json_encode($item)));
-
-        
     }
 
 }
