@@ -91,6 +91,7 @@ class QueryBuilderTest extends TestCase
 
         $collection->each(fn($item) => Log::info(json_encode($item)));
 
+        
     }
 
 }
