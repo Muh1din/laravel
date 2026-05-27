@@ -7,6 +7,7 @@ use Database\Seeders\CategorySeeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use PhpParser\Node\Expr\FuncCall;
 use Tests\TestCase;
 
 class CategoryTest extends TestCase
@@ -67,14 +68,48 @@ class CategoryTest extends TestCase
             $categories = new Category();
             $categories->id = "id $i";
             $categories->name = "name $i";
+
             $categories->save();
         }
 
-        $categories = Category::query()->whereNull('description')->get();
+        $categories = Category::query()->whereNull("description")->get();
         self::assertEquals(5, $categories->count());
-        $categories->each(function ($category){
-            self::assertNull($category->description);
+        $categories->each(function($category){
+            $category->description = "update";
+            $category->update();
         });
+    }
+
+    public function testUpdateMany(){
+        $categories = [];
+
+        for ($i=0; $i < 10 ; $i++) { 
+            $categories [] = [
+                "id" => "id $i",
+                "name" => "name $i",
+            ];
+        }
+
+       // insert
+        $result = Category::query()->insert($categories);
+        self::assertTrue($result);
+
+       // update
+        Category::query()->whereNull("description")->update([
+            "description" => "Updated"
+        ]);
+
+       // select
+       $total = Category::query()->where("description", "=", "Updated")->count();
+       self::assertEquals(10, $total);
+    }
+
+    public function testDelete(){
+        $this->seed(CategorySeeder::class);
+
+        // cari id yang akan dihapus
+        $category = Category::query()->find("FOOD");
+        $result = $category->delete();
     }
 
 }
